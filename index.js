@@ -1,10 +1,11 @@
 const fetch = require("node-fetch");
 const core = require("@actions/core");
+const github = require("@actions/github");
 const { Webhooks } = require("@octokit/webhooks");
 
 try {
-  const URL = core.getInput("URL", { required: true });
   const PAT = core.getInput("PAT", { required: true });
+  const EVENT = core.getInput("EVENT", { required: true });
 
   const webhook = new Webhooks({ secret: PAT });
 
@@ -17,12 +18,17 @@ try {
   }
 
   const PAYLOAD = {
-    ...DATA,
+    event_type: `${EVENT}`,
+    client_payload: {
+      ...DATA,
+    },
   };
 
   const SIGNITURE = webhook.sign(PAYLOAD);
 
-  fetch(URL, {
+  let { owner, repo } = github.context.repo;
+
+  fetch(`https://api.github.com/repos/${owner}/${repo}/dispatches`, {
     method: "POST",
     headers: {
       "X-Hub-Signature": SIGNITURE,
@@ -30,10 +36,21 @@ try {
       "Content-Type": "application/json",
       Accept: "application/vnd.github.everest-preview+json",
     },
-    body: PAYLOAD,
+    body: JSON.stringify(PAYLOAD),
   })
-    .then((res) => res.json())
-    .then((res) => core.info(JSON.stringify(res)));
+    .then((res) => {
+      if (res.status == 204) {
+        return {
+          msg: `Successful call to webhook event ${PAYLOAD.event_type}`,
+        };
+      }
+
+      return res.json();
+    })
+    .then((res) => core.info(JSON.stringify(res)))
+    .catch((err) => {
+      throw "Failed to execute Webhook request";
+    });
 } catch (error) {
   core.setFailed(error.message);
 }
