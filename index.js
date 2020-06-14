@@ -1,3 +1,4 @@
+const fetch = require('node-fetch')
 const core = require('@actions/core');
 const { Webhooks } = require("@octokit/webhooks")
 
