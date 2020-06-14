@@ -1,0 +1,14 @@
+name: "Call Webhook"
+description: "Call a webhook from an action"
+inputs:
+  PAT:
+    description: "Personal Access Token required to call webhook"
+    required: true
+  EVENT:
+    description: "The name of a github event that is called. This should be set in workflows that are being triggered"
+    required: true
+  PAYLOAD:
+    description: "JSON data to send to the webhook"
+runs:
+  using: "node12"
+  main: "index.js"

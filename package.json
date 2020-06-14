@@ -1,0 +1,24 @@
+{
+  "name": "call-webhook-action",
+  "version": "1.0.0",
+  "description": "Call a webhook from a github action",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomadamatkinson/call-webhook-action.git"
+  },
+  "author": "Tom Atkinson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tomadamatkinson/call-webhook-action/issues"
+  },
+  "homepage": "https://github.com/tomadamatkinson/call-webhook-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "@actions/github": "^3.0.0",
+    "@octokit/webhooks": "^7.6.4"
+  }
+}
