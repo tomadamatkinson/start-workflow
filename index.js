@@ -1,19 +1,19 @@
 const core = require('@actions/core');
-const { createWebhooksApi } = require("@octokit/webhooks")
+const { Webhooks } = require("@octokit/webhooks")
 
 try {
 
     const URL = core.getInput('URL', { required: true })
     const PAT = core.getInput('PAT', { required: true })
 
-    const webhook = createWebhooksApi({ secret: PAT })
+    const webhook = new Webhooks({ secret: PAT })
 
     let DATA = {}
 
     try {
         DATA = JSON.parse(core.getInput('PAYLOAD'))
     } catch (err) {
-        DATA = {}
+        core.setFailed("The payload passed is not valid JSON");
     }
 
     const PAYLOAD = {
